@@ -1,0 +1,18 @@
+---
+- hosts: websrv
+  tasks:
+  - name: 1) Install httpd
+    package: name=httpd state=installed
+  - name: 2) Mount point in fstab
+    mount:
+    path: /var/www/html
+    src: 10.0.3.9:/mnt/web
+    fstype: nfs
+    opts: defaults,_netdev
+    state: present
+  - name: 3) Démarre et enable Apache
+    service: name=httpd state=started enabled=yes 
+  - name: 4) Ajout de la règle de pare-feu
+    action: command /usr/bin/firewall-cmd --permanent --add-port=80/tcp 
+  - name: 5) Redémarrer le pare-feu
+    service: name=firewalld state=restarted

@@ -1,0 +1,32 @@
+---
+- hosts: websrv
+  handlers:
+  - name: restart httpd
+    service: name=httpd state=restarted 
+  tasks:
+  - name: 1. Installation Apache
+    yum: name=httpd state=present 
+  - name: 2. Installation PHP
+    yum: name=php state=present 
+  - name: 3. Installation extensions PHP
+    yum: name={{item}} state=present
+    with_items:
+    - php-pdo
+    - php-mysql
+    - php-soap
+    - php-gd
+    - php-pear-MDB2-Driver-mysqli
+  - name: 4. Installation de MariaDB
+    yum: name=mariadb-server 
+  - name: 5. Démarrage Apache
+    service: name=httpd state=started enabled=yes 
+  - name: 6. Démarrage MariaDB
+    service: name=mariadb state=started enabled=yes 
+  - name: 7. Installation index
+    copy: src=info.php dest=/var/www/html/index.php
+    notify:
+    - restart httpd 
+#  - name: 8. Ajout de la règle de pare-feu
+#    action: command /usr/bin/firewall-cmd --permanent --add-port=80/tcp 
+#  - name: 9. Redémarrer le pare-feu
+#    service: name=firewalld state=restarted

@@ -1,0 +1,4 @@
+WebServeur : <br>
+{% for server in groups['websrv'] %}
+Hostname : {{ server }} IP: {{ hostvars[server].ansible_default_ipv4.address }} Memory : {{ hostvars[server].ansible_memfree_mb }} MB <br>
+{% endfor %}

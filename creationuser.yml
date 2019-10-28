@@ -1,0 +1,16 @@
+---
+- hosts: websrv
+  #  remote_user: root
+  tasks:
+    - name: ensure 'toto' user exists
+      user:
+        name: toto
+        append: yes
+        groups: wheel
+        shell: /bin/bash
+        password: "{{ formation_passwd }}"
+        generate_ssh_key: yes
+        state: present
+  vars:
+    formation_passwd: "{{ vault_formation_passwd }}"  
+    root_passwd:

@@ -1,0 +1,11 @@
+---
+- hosts: websrv
+  tasks:
+  - name: Install for all
+    package: name=facter state=installed
+#  - name: Install avec Yum
+#    yum: name=facter state=installed
+#    when: ansible_os_family == "RedHat"
+#  - name: Install avec apt
+#    apt: name=facter state=installed
+#    when: ansible_os_family == "Debian"

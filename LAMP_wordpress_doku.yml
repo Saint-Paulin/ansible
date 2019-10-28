@@ -1,0 +1,47 @@
+---
+- hosts: centos7-websrv
+  tasks:
+  - name: 1. Installation Apache
+    yum: name=httpd state=present 
+  - name: 2. Installation Centos release scl
+    yum: name=centos-release-scl state=present 
+  - name: 3. Installation extensions PHP
+    yum: name={{item}} state=present
+    with_items:
+    - rh-php72 
+    - rh-php72-php
+    - rh-php72-php-fpm
+  - name: 4. Installation de MariaDB
+    yum: name=mariadb-server 
+
+  - name: DokuWiki
+    unarchive:
+      src: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
+      dest: /var/www/html/
+      remote_src: yes
+      #copy: no
+      owner: apache
+      group: apache
+      extra_opts:
+      - --transform
+      - s/^dokuwiki*/dokuwiki/
+
+  - name: Wordpress
+    unarchive:
+      src: https://fr.wordpress.org/latest-fr_FR.tar.gz
+      dest: /var/www/html/
+      remote_src: yes
+      #copy: no
+      owner: apache
+      group: apache
+      # extra_opts:
+      # - --transform
+      # - wordpress
+
+  - name: Copie du VirtualHost
+    copy: src=wordpress.conf dest=/etc/httpd/conf.d/
+
+  - name: 5. Démarrage Apache
+    service: name=httpd state=started enabled=yes 
+  - name: 6. Démarrage MariaDB
+    service: name=mariadb state=started enabled=yes

@@ -1,0 +1,9 @@
+---
+- name: Ceci est un beau PlayBook
+  hosts: web-servers
+  remote_user: gerard  
+  become: sudo
+  tasks:
+    - name: install Apache
+      yum: name=httpd state=installed
+      when: ansible_os_family == "RedHat"

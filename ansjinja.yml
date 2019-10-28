@@ -1,0 +1,40 @@
+---
+- name: Lab2 - All server setup
+  hosts: websrv
+  become: true
+  vars:
+  tasks:
+  - name: Copy motd file
+    template: src=/mnt/perso/Ansible/motd.j2 dest=/etc/motd
+
+- name: Lab2 - Web server setup
+  hosts: websrv
+  become: true
+  tasks:
+  - name: Install Apache for Centos
+    yum: name=httpd state=present
+    notify: Restart Apache
+
+#- name: Install Apache for Debian/Ubuntu
+#apt: name=httpd state=present
+#notify: Restart Apache
+
+  - name: Copy Index.html
+    template: src=index.html.j2 dest=/var/www/html/index.html
+
+  #- name: Set ssh root login at yes
+    #lineinfile: dest=/etc/ssh/sshd_config
+    #  line="PermitRootLogin yes"
+    #  state=present
+    #replace: 
+     # path: /etc/ssh/sshd_config
+      #regexp: '^PermitRootLogin yes$'
+      #replace: 'PermitRootLogin no'
+      #backup: yes
+      
+    #notify: RestartSSH
+
+  #- name: Restart Apache
+  #  service: name=httpd state=restarted enabled=yes
+  #- name: RestartSSH
+  #  service: name=sshd state=restarted enabled=yes
